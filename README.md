@@ -67,6 +67,7 @@ Below is the planned support matrix for upcoming model families:
 | Model Family | SFT Support | RL (GRPO) Support |
 | :--- | :---: | :---: |
 | **Qwen 3.5** | ✅ Released | Scheduled |
+| Qwen 3.6 | ✅ Released | ✅ Released |
 | **Qwen 3** | Scheduled | Scheduled |
 | **Llama3.2-R1 (3B)** | ✅ Included | ✅ Released |
 | **Llama** (3.1 / 3.3) | Scheduled | Scheduled |
@@ -88,6 +89,7 @@ Below are the interactive Kaggle and Colab notebooks, organized by model archite
 | 🤖 Model Architecture | 🛠️ Pipeline | 🚀 Quick Setup (1-Click Run) |
 | :--- | :--- | :---: |
 | **Qwopus3.5 (27B)** | SFT | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/R6410418/Jackrong-llm-finetuning-guide/blob/main/train_code/Qwopus3-5-27b-Colab.ipynb) |
+| **Qwopus3.6 (27B)** | GSPO | [![Python Code](https://img.shields.io/badge/Code-Python-3776AB?style=flat-square&logo=python&logoColor=white)](train_code/Qwopus3.6-27B-GSPO/qwopus3_6_27b_gspo_training.py) |
 | **Qwen3.5 (9B)** | SFT | [![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/R6410418/Jackrong-llm-finetuning-guide/blob/main/train_code/Qwen3.5-9B-Neo-Kaggle.ipynb) |
 | **Qwopus3.5 (35B)** | SFT | [![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/R6410418/Jackrong-llm-finetuning-guide/blob/main/train_code/Qwopus-3.5-35B-A3B-Kaggle.ipynb) |
 | **Llama3.2-R1 (3B)** | RL (GPRO) | [![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/R6410418/Jackrong-llm-finetuning-guide/blob/main/train_code/Llama-3.2-3B-R1-Zero-GRPO.ipynb) |

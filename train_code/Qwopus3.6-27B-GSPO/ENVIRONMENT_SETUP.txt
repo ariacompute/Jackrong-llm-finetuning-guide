@@ -1,0 +1,207 @@
+Qwopus3.6 27B GSPO Environment Setup
+=====================================
+
+This file is written for beginners who want to run the public GSPO tutorial in
+qwopus3_6_27b_gspo_training.py. The defaults are safe: they validate imports,
+dataset parsing, and reward functions without launching training.
+
+1. Operating system assumptions
+-------------------------------
+
+Use a recent Linux environment with NVIDIA CUDA support for real training. The
+script can run its dry checks on macOS or CPU-only Linux, but loading and
+training a 27B-class model requires high-memory accelerator hardware.
+
+2. Hardware guidance
+--------------------
+
+Jackrong/Qwopus3.6-27B-v2 is a 27B-class multimodal model. Even LoRA/4-bit GSPO
+can require substantial VRAM or unified memory because the trainer samples
+multiple completions per prompt.
+
+Lower-memory hardware:
+- reduce MAX_SEQ_LENGTH first
+- reduce MAX_COMPLETION_LENGTH
+- set PER_DEVICE_TRAIN_BATCH_SIZE=1
+- reduce NUM_GENERATIONS
+- reduce LORA_R
+- increase GRADIENT_ACCUMULATION_STEPS to preserve effective batch size
+
+Higher-memory hardware:
+- increase context length only when your dataset needs it
+- increase NUM_GENERATIONS only when reward comparison quality improves
+- watch disk use before merged 16-bit and GGUF export
+
+3. Python version
+-----------------
+
+The validation environment used Python 3.12. Python 3.10 or newer is
+recommended because the script uses modern type hints.
+
+4. Create a virtual environment
+-------------------------------
+
+Example:
+
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+
+5. Install PyTorch
+------------------
+
+Install the torch build that matches your CUDA driver. Check the official
+PyTorch selector for the current command. Example for CUDA 12.8-style systems:
+
+pip install --index-url https://download.pytorch.org/whl/cu128 torch torchvision torchaudio
+
+If you are on a managed system, use the torch build already recommended by that
+environment.
+
+6. Install the training stack
+-----------------------------
+
+From this folder:
+
+pip install -r requirements-gspo.txt
+
+The validation environment had these major packages available:
+- torch 2.11.0
+- unsloth 2026.4.8
+- unsloth_zoo 2026.4.9
+- trl 0.22.2
+- transformers 5.9.0
+- datasets 4.3.0
+- accelerate 1.13.0
+- bitsandbytes 0.49.2
+- vllm 0.21.0
+- peft 0.19.1
+- huggingface_hub 1.12.0
+
+7. Optional TRL/vLLM note
+-------------------------
+
+In the validation environment, importing TRL's GRPOTrainer attempted to import
+an optional vLLM integration module named vllm_ascend. If your environment shows
+the same error, install a compatible vLLM integration for your platform or use a
+TRL/vLLM combination that does not require that optional module. The dry checks
+and reward tests do not require trainer import.
+
+8. Hugging Face login
+---------------------
+
+Do not hard-code tokens in Python. Use one of these safe options:
+
+huggingface-cli login
+
+or:
+
+export HF_TOKEN="your_huggingface_token"
+
+The tutorial's Hub push flags default to False.
+
+9. Optional WandB setup
+-----------------------
+
+WandB is optional. If you use it, export the key in your shell:
+
+export WANDB_API_KEY
+export REPORT_TO="wandb"
+export WANDB_PROJECT="qwopus3.6-27b-gspo-public-example"
+
+10. Run the interactive Python file
+-----------------------------------
+
+Open qwopus3_6_27b_gspo_training.py in VS Code, PyCharm, or a Jupyter-compatible
+editor. The # %% markers create notebook-style cells. Start with:
+
+- imports and environment checks
+- dataset loading
+- reward functions
+- smoke-test checklist
+
+11. Run the whole script safely
+-------------------------------
+
+python qwopus3_6_27b_gspo_training.py
+
+This runs the default smoke-all command. It does not start training.
+
+Other safe commands:
+
+python qwopus3_6_27b_gspo_training.py check-env
+python qwopus3_6_27b_gspo_training.py dry-run-data
+python qwopus3_6_27b_gspo_training.py test-rewards
+python qwopus3_6_27b_gspo_training.py list-gguf-quants
+
+12. Start a real training run
+-----------------------------
+
+Review your dataset, output path, memory budget, and rewards first. Then run:
+
+export DATASET_PATH="/workspace/example-user/datasets/gspo_train.jsonl"
+export OUTPUT_DIR="/workspace/example-user/outputs/qwopus3.6-27b-gspo"
+export DRY_RUN=False
+export START_TRAINING=True
+python qwopus3_6_27b_gspo_training.py train
+
+13. Resume from a checkpoint
+----------------------------
+
+export RESUME_FROM_CHECKPOINT="/workspace/example-user/outputs/qwopus3.6-27b-gspo/checkpoint-10"
+export DRY_RUN=False
+export START_TRAINING=True
+python qwopus3_6_27b_gspo_training.py train
+
+14. Export 16-bit merged model locally
+--------------------------------------
+
+This is heavy and disabled by default. After a real training run:
+
+export EXPORT_MERGED_16BIT_LOCAL=True
+python qwopus3_6_27b_gspo_training.py export-16bit
+
+15. Compile or install llama.cpp for GGUF conversion
+----------------------------------------------------
+
+Example:
+
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+cmake -B build
+cmake --build build --config Release -j
+
+Then set:
+
+export LLAMA_CPP_DIR="/workspace/example-user/llama.cpp"
+
+16. Export GGUF Q8_0 locally
+----------------------------
+
+Review the printed commands first:
+
+export EXPORT_GGUF_Q8_0_LOCAL=True
+python qwopus3_6_27b_gspo_training.py export-gguf-q8
+
+Run them only after review:
+
+export RUN_GGUF_COMMANDS=True
+python qwopus3_6_27b_gspo_training.py export-gguf-q8
+
+17. Common GGUF conversion fixes
+--------------------------------
+
+- Confirm the merged 16-bit folder has config.json, tokenizer files, and model
+  weights.
+- Use a recent llama.cpp checkout.
+- Install llama.cpp conversion requirements if the converter reports missing
+  Python modules.
+- Ensure enough free disk space for both bf16 and Q8_0 intermediate files.
+- For multimodal models, keep processor_config.json and inspect mmproj support.
+
+18. API version warning
+-----------------------
+
+Package APIs evolve. If a method signature changes, inspect the installed
+package version and update only the affected call. Do not guess unsupported
+export commands.

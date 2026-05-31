@@ -1,0 +1,3 @@
+{"row_id":"sample-math-001","source_dataset":"synthetic-public-example","messages":[{"role":"user","content":"Compute 12 * 7. Return only the final number inside the answer tag after reasoning."}],"expected_answer":"84","metadata":{"topic":"arithmetic","split":"train"}}
+{"row_id":"sample-mcqa-001","source_dataset":"synthetic-public-example","prompt":"Which option is the largest prime number? A. 21 B. 29 C. 35 D. 39","expected_answer":"B","metadata":{"topic":"multiple-choice","split":"train"}}
+{"row_id":"sample-fraction-001","source_dataset":"synthetic-public-example","question":"Simplify the fraction 6/12.","expected_answer":"1/2","metadata":{"topic":"fractions","split":"train"}}
