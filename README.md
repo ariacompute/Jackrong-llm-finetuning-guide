@@ -18,7 +18,7 @@
   ·
   <a href="qwen-mtp-gguf/"><strong>Ship with GGUF</strong></a>
   ·
-  <a href="showcase/"><strong>View the design showcase</strong></a>
+  <a href="https://r6410418.github.io/Jackrong-llm-finetuning-guide/"><strong>Open the product website</strong></a>
 </p>
 
 <p>
